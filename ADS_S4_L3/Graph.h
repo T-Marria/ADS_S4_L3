@@ -1,6 +1,12 @@
 #pragma once
-#include <list>
+#include <utility>
 #include <vector>
+#include <string>
+#include <list>
+#include <queue>
+#include <map>
+#include <exception>
+#include <iostream>
 using namespace std;
 
 
@@ -20,7 +26,7 @@ class Graph {
         TVertex prev;
         int t_open = 0;
         int t_close = 0;
-    }
+    };
 
     struct vertex {
         TVertex data;
@@ -33,12 +39,12 @@ class Graph {
     vector<vertex> table;
 
     void _deep_search(const TVertex& data, int& t) { // внутренняя функция для поиска
-        start_id = index(data);
+        int start_id = index(data);
         table[start_id].info.color = 1;
         table[start_id].info.t_open = t;
         t++;
         for (auto it = table[start_id].edges.begin(); it != table[start_id].edges.end(); it++) {
-            next_id = index(it->dest)
+            int next_id = index(it->dest);
             if (table[next_id].info.color == 0) {
                 table[next_id].info.prev = table[start_id].data;
                 _deep_search(table[next_id].data, t);
@@ -46,7 +52,7 @@ class Graph {
         }
         table[start_id].info.color = 1;
         table[start_id].info.t_close = t;
-        cout << table[start_id].data << ", ";
+        table[start_id].data.print_town();
         t++;
     }
 
@@ -105,8 +111,8 @@ public:
 
     void deep_search() {    // основная функция алгоритма обхода
         int t = 0;
-        _deep_search(table[0], t);
-        for (auto vert_it = 0; vert_it != table.end(); vert_it++) {
+        _deep_search(table[0].data, t);
+        for (auto vert_it = table.begin(); vert_it != table.end(); vert_it++) {
             if ((*vert_it).info.color == 0) {
                 _deep_search((*vert_it).data, t);
             }
@@ -117,16 +123,18 @@ public:
 
     void print() {
         for (size_t i = 0; i < table.size(); ++i) {
-            std::cout << "information about the town: " << std::endl;
-            table[i]._data.print_town();
-            std::cout << "The roads from this town:" << std::endl;
-            if (table[i]._edges.begin() == table[i]._edges.end()) {
-                std::cout << "There are no roads" << std::endl;
+            cout << "information about the town: " << endl;
+            table[i].data.print_town();
+            cout << "The roads from this town:" << endl;
+            if (table[i].edges.begin() == table[i].edges.end()) {
+                cout << "There are no roads" << endl;
             }
-            for (auto elem : table[i]._edges) {
-                std::cout << "\t" << "Name of road: " << elem._data.get_name() << "  Length: " << elem._data.get_length() << std::endl;
+            for (auto elem : table[i].edges) {
+                cout << "\t" << "Name of road: " << elem.data.get_name() << "  Length: " << elem.data.get_length() << endl;
             }
-            std::cout << std::endl;
+            cout << endl;
         }
     }
+
+
 };
