@@ -42,14 +42,15 @@ int main() {
     g.add_edge(Piter, TLT, Piter_TLT);
     g.add_edge(Piter, Kirov, Piter_Kirov);
 
-    //g.print();
-    //auto result = g.bellman_ford_algorithm(Samara, Kirov);
-    //std::cout << "Кратчайший путь: " << std::endl;
-    //for (const auto& elem : result.first) {
-    //    elem.print_town();
-    //    std::cout << "->" << std::endl;
-    //}
-    //std::cout << "Итоговый вес пути: " << result.second << std::endl;
+    g.print();
+    cout << "_______" << endl;
+    auto result = g.bellman_ford_algorithm(Samara, Kirov);
+    std::cout << "Кратчайший путь: " << std::endl;
+    for (const auto& elem : result.first) {
+        elem.print_town();
+        std::cout << "->" << std::endl;
+    }
+    std::cout << "Итоговый вес пути: " << result.second << std::endl;
 
 
     std::cout << "\n" << "Обход в глубину\n" << std::endl;

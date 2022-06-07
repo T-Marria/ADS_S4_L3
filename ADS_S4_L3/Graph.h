@@ -119,9 +119,45 @@ public:
         }
     }
 
-    // TODO: add bellman ford algorithm
+    std::pair<std::list<TVertex>, double> bellman_ford_algorithm(const TVertex& src, const TVertex& dst) {
+        int index_src = index(src);
+        int index_dst = index(dst);
+        if ((index_src == -1) || (index_dst == -1)) throw std::exception();
+        std::vector<double> distance(table.size(), std::numeric_limits<double>::max());
+        std::vector<int> prev(table.size(), -1);
+        distance[index_src] = 0;
+
+        for (size_t i = 0; i < table.size() - 1; ++i) {
+            for (size_t j = 0; j < table.size(); ++j) {
+                for (auto elem : table[j].edges) {
+                    int id_dst = index(elem.dest);
+                    if (distance[id_dst] > distance[j] + static_cast<double>(elem.data)) {
+                        distance[id_dst] = distance[j] + static_cast<double>(elem.data);
+                        prev[id_dst] = static_cast<int>(j);
+                    }
+                }
+            }
+        }
+
+        for (size_t j = 0; j < table.size(); ++j) {
+            for (auto elem : table[j].edges) {
+                int id_dst = index(elem.dest);
+                if (distance[id_dst] > distance[j] + static_cast<double>(elem.data)) throw std::exception();
+                //std::cout << "!!!!" << distance[id_dst] << " " << distance[j] << "  " << static_cast<double>(elem._data) << std::endl;
+            }
+        }
+
+        std::list<TVertex> path;
+        for (int i = index_dst; i != -1; i = prev[i]) {
+            if (distance[i] == std::numeric_limits<double>::max()) throw std::exception();
+            path.push_front(table[i].data);
+        }
+        return make_pair(path, distance[index_dst]);
+    }
+
 
     void print() {
+        cout << "Graph: " << endl;
         for (size_t i = 0; i < table.size(); ++i) {
             cout << "information about the town: " << endl;
             table[i].data.print_town();
@@ -135,6 +171,6 @@ public:
             cout << endl;
         }
     }
-
-
 };
+
+
