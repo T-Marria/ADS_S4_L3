@@ -113,6 +113,20 @@ public:
         }
     }
 
-    
-    // TODO: add graph printing
+    // TODO: add bellman ford algorithm
+
+    void print() {
+        for (size_t i = 0; i < table.size(); ++i) {
+            std::cout << "information about the town: " << std::endl;
+            table[i]._data.print_town();
+            std::cout << "The roads from this town:" << std::endl;
+            if (table[i]._edges.begin() == table[i]._edges.end()) {
+                std::cout << "There are no roads" << std::endl;
+            }
+            for (auto elem : table[i]._edges) {
+                std::cout << "\t" << "Name of road: " << elem._data.get_name() << "  Length: " << elem._data.get_length() << std::endl;
+            }
+            std::cout << std::endl;
+        }
+    }
 };
