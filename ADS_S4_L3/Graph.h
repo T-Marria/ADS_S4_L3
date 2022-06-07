@@ -3,25 +3,52 @@
 #include <vector>
 using namespace std;
 
+
 template<typename TVertex, typename TEdge>
 class Graph {
 
-    struct Edge {
+    struct edge {
         TEdge data;
         TVertex dest;
 
-        Edge(const TEdge& data, const TVertex& destination) : data(data), dest(destination) {}
+        edge(const TEdge& data, const TVertex& destination) : data(data), dest(destination) {}
 
     };
 
-    struct Vertex {
+    struct search_info {
+        int color = 0;
+        TVertex prev;
+        int t_open = 0;
+        int t_close = 0;
+    }
+
+    struct vertex {
         TVertex data;
-        list<Edge> edges;
+        list<edge> edges;
+        search_info info;
 
-        Vertex(const TVertex& data) : data(data) {}
+        vertex(const TVertex& data) : data(data) {}
     };
 
-    vector<Vertex> table;
+    vector<vertex> table;
+
+    void _deep_search(const TVertex& data, int& t) { // внутренняя функция для поиска
+        start_id = index(data);
+        table[start_id].info.color = 1;
+        table[start_id].info.t_open = t;
+        t++;
+        for (auto it = table[start_id].edges.begin(); it != table[start_id].edges.end(); it++) {
+            next_id = index(it->dest)
+            if (table[next_id].info.color == 0) {
+                table[next_id].info.prev = table[start_id].data;
+                _deep_search(table[next_id].data, t);
+            }
+        }
+        table[start_id].info.color = 1;
+        table[start_id].info.t_close = t;
+        cout << table[start_id].data << ", ";
+        t++;
+    }
 
 public:
     int index(const TVertex& data) const {
@@ -33,7 +60,7 @@ public:
 
     void add_vertex(const TVertex& data) {
         if (index(data) == -1) {
-            table.push_back(Vertex(data));
+            table.push_back(vertex(data));
         }
         else throw exception();
     }
@@ -42,7 +69,7 @@ public:
         int from_id = index(from_data);
         int to_id = index(to_data);
         if ((from_id == -1) || (to_id == -1)) throw exception();
-        table[from_id].edges.push_back(Edge(new_edge, to_data));
+        table[from_id].edges.push_back(edge(new_edge, to_data));
     }
 
     void delete_vertex(const TVertex& data) {
@@ -75,6 +102,17 @@ public:
             else ++it;
         }
     }
+
+    void deep_search() {    // основная функция алгоритма обхода
+        int t = 0;
+        _deep_search(table[0], t);
+        for (auto vert_it = 0; vert_it != table.end(); vert_it++) {
+            if ((*vert_it).info.color == 0) {
+                _deep_search((*vert_it).data, t);
+            }
+        }
+    }
+
     
     // TODO: add graph printing
 };
